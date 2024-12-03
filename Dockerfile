@@ -1,5 +1,5 @@
 # Setup chef
-FROM rust:1.82.0-slim-bookworm AS base
+FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
 
 RUN apt-get update && apt-get install pkg-config libssl-dev git -y
 
@@ -25,7 +25,9 @@ RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
 
 COPY . .
 
-RUN cargo build --release --bin boilmaster
+ARG TARGETPLATFORM
+
+RUN cargo build --release --target $TARGETPLATFORM --bin boilmaster
 
 # Create runtime image
 FROM debian:bookworm-slim AS runtime
