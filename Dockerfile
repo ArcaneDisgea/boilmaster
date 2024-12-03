@@ -27,9 +27,13 @@ COPY . .
 
 ARG TARGETPLATFORM
 
-RUN rustup target add $TARGETPLATFORM
-
-RUN cargo build --release --target $TARGETPLATFORM --bin boilmaster
+# RUN cargo build --release --bin boilmaster
+RUN if [$TARGETPLATFORM = "linux/arm64"]; then \
+		echo "Building arm64..." \
+		&& cargo build --release --target aarch64-unknown-linux-gnu --bin boilmaster \
+	else \
+		echo "Building x86..." \
+		&& cargo build --release --bin boilmaster
 
 # Create runtime image
 FROM debian:bookworm-slim AS runtime
