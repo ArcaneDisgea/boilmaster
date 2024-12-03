@@ -36,6 +36,7 @@ RUN case "$TARGETPLATFORM" in \
   *) exit 1 ;; \
 esac
 
+RUN rustup target add $(cat /rust_target.txt)
 RUN cargo build --release --target $(cat /rust_target.txt) --bin boilmaster
 
 # Create runtime image
