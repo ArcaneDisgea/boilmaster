@@ -44,7 +44,6 @@ jobs:
           tags: |
             latest
             type=sha
-            -
       
       # This step uses the `docker/setup-buildx-action` to enabled
       - name: Set up Docker Buildx
