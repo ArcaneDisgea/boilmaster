@@ -1,5 +1,5 @@
 # Setup chef
-FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
+FROM --platform=$BUILDPLATFORM rust:1.82.0-alpine AS base
 
 RUN apt-get update && apt-get install pkg-config libssl-dev git -y
 
@@ -31,8 +31,8 @@ COPY . .
 
 ARG TARGETPLATFORM
 RUN case "$TARGETPLATFORM" in \
-  "linux/arm64") echo aarch64-unknown-linux-gnu > /rust_target.txt ;; \
-  "linux/amd64") echo x86_64-unknown-linux-gnu > /rust_target.txt ;; \
+  "linux/arm64") echo aarch64-unknown-linux-musl > /rust_target.txt ;; \
+  "linux/amd64") echo x86_64-unknown-linux-musl > /rust_target.txt ;; \
   *) exit 1 ;; \
 esac
 
