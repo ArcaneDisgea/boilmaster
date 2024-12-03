@@ -36,7 +36,7 @@ RUN case "$TARGETPLATFORM" in \
   *) exit 1 ;; \
 esac
 
-# RUN rustup target add $(cat /rust_target.txt)
+RUN rustup target add $(cat /rust_target.txt)
 # RUN cargo build --release --target $(cat /rust_target.txt) --bin boilmaster
 RUN cargo install cross --git https://github.com/cross-rs/cross
 RUN cargo build --release --target $(cat /rust_target.txt) --bin boilmaster
