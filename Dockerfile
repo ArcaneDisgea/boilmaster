@@ -25,15 +25,18 @@ RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
 
 COPY . .
 
-ARG TARGETPLATFORM
+# ARG TARGETPLATFORM
 
 # RUN cargo build --release --bin boilmaster
-RUN if [$TARGETPLATFORM = "linux/arm64"]; then \
-		echo "Building arm64..." \
-		&& cargo build --release --target aarch64-unknown-linux-gnu --bin boilmaster \
-	else \
-		echo "Building x86..." \
-		&& cargo build --release --bin boilmaster
+
+ARG TARGETPLATFORM
+RUN case "$TARGETPLATFORM" in \
+  "linux/arm64") echo aarch64-unknown-linux-gnu > /rust_target.txt ;; \
+  "linux/amd64") echo  x86_64-unknown-linux-gnu > /rust_target.txt ;; \
+  *) exit 1 ;; \
+esac
+
+RUN cargo build --release --target $(cat /rust_target.txt) --bin boilmaster
 
 # Create runtime image
 FROM debian:bookworm-slim AS runtime
