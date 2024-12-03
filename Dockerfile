@@ -27,6 +27,8 @@ COPY . .
 
 ARG TARGETPLATFORM
 
+RUN rustup target add $TARGETPLATFORM
+
 RUN cargo build --release --target $TARGETPLATFORM --bin boilmaster
 
 # Create runtime image
