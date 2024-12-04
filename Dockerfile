@@ -1,4 +1,3 @@
-# Global Args
 # Setup chef
 FROM rust:1.82.0-slim-bookworm AS base
 
