@@ -53,6 +53,7 @@ ENV BM_SEARCH_SQLITE_DIRECTORY="/app/persist/search"
 
 WORKDIR /app
 
+RUN apt-get clean
 RUN apt-get update && apt-get install -y git curl
 
 ARG zlib
