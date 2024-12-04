@@ -14,8 +14,9 @@ COPY . .
 
 RUN cargo chef prepare --bin boilmaster --recipe-path recipe.json
 
-# Build Boilmaster
-FROM base AS builder
+# Build x86 Boilmaster
+FROM base AS x86builder
+ARG arch
 
 WORKDIR /app
 
@@ -24,7 +25,23 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
 
 COPY . .
+
+RUN cargo build --release --target ${arch} --bin boilmaster
+
+# Build arm Boilmaster
+
+FROM base AS armbuilder
 ARG arch
+
+WORKDIR /app
+
+COPY --from=planner /app/recipe.json recipe.json
+
+RUN rustup target add ${arch}
+
+RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
+
+COPY . .
 
 RUN cargo build --release --target ${arch} --bin boilmaster
 

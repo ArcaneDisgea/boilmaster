@@ -24,11 +24,13 @@ jobs:
                       name: boilmaster-x86_64-unknown-linux-gnu
                       cargo_command: cargo
                       triple: x86_64-unknown-linux-gnu
+                      target: x86builder
                     - os_name: arm64
                       os: ubuntu-latest
                       bin: boilmaster
                       name: boilmaster-aarch64-unknown-linux-gnu
                       triple: aarch64-unknown-linux-gnu
+                      target: armbuilder
 
         runs-on: ${{ matrix.platform.os }}
 
@@ -76,6 +78,7 @@ jobs:
                   # platforms: x86_64-unknown-linux-gnu,aarch64-unknown-linux-gnu
                   # platforms: linux/amd64,linux/arm64
                   build-args: arch=${{ matrix.platform.triple }}
+                  target: ${{ matrix.platform.target }}
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
