@@ -33,6 +33,7 @@ RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
 COPY . .
 
 ARG arch
+arg target
 
 ARG pkg-config-path
 ARG pkg-config-sysroot-dir
@@ -42,7 +43,7 @@ ENV PKG_CONFIG_SYSROOT_DIR=${pkg-config-sysroot-dir}
 RUN cargo build --release --target ${arch} --bin boilmaster
 
 # Create runtime image
-FROM debian:bookworm-slim AS runtime
+FROM --platform=${target} debian:bookworm-slim AS runtime
 
 ARG zlib
 

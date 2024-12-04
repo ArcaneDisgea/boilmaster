@@ -33,7 +33,7 @@ jobs:
                       bin: boilmaster
                       name: boilmaster-aarch64-unknown-linux-gnu
                       triple: aarch64-unknown-linux-gnu
-                      target: linux/arm64/v8
+                      target: linux/arm64
                       zlib: aarch64-linux-gnu
                       pkg-config-path: /usr/lib/aarch64-linux-gnu/pkgconfig/
                       pkg-config-sysroot-dir: /usr/lib/aarch64-linux-gnu/
@@ -88,7 +88,7 @@ jobs:
                       zlib=${{ matrix.platform.zlib }}
                       pkg-config-path=${{ matrix.platform.pkg-config-path}}
                       pkg-config-sysroot-dir=${{ matrix.platform.pkg-config-sysroot-dir }}
-                  # target: ${{ matrix.platform.target }}
+                      target=${{ matrix.platform.target }}
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
@@ -100,9 +100,10 @@ jobs:
                   subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
                   subject-digest: ${{ steps.push.outputs.digest }}
                   push-to-registry: true
-
+              
             - name: Create and push manifest images
-              uses: Noelware/docker-manifest-action@0.4.2
+              uses: int128/docker-manifest-create-action@v2
               with:
-                  inputs: arcanedisgea/boilmaster:latest
-                  images: arcanedisgea/boilmaster:latest-x86_64,arcanedisgea/boilmaster:latest-arm64
+                  tags: ghcr.io/${{ github.repository }}:latest
+                  sources: |
+                    ghcr.io/${{ github.repository }}:latest-${{ matrix.platform.os_name }}
