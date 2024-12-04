@@ -79,7 +79,9 @@ jobs:
                   context: .
                   # platforms: x86_64-unknown-linux-gnu,aarch64-unknown-linux-gnu
                   platform: ${{ matrix.platform.target}}
-                  build-args: arch=${{ matrix.platform.triple }},zlib=${{ matrix.platform.zlib }}
+                  build-args: |
+                      arch=${{ matrix.platform.triple }}
+                      zlib=${{ matrix.platform.zlib }}
                   # target: ${{ matrix.platform.target }}
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}
