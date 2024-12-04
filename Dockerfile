@@ -1,7 +1,7 @@
 # Setup chef
 FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
 
-RUN apt-get update && apt-get install pkg-config libssl-dev git -y
+RUN apt-get update && apt-get install pkg-config libssl-dev git docker.io -y
 
 RUN cargo install cargo-chef --locked
 
@@ -38,6 +38,7 @@ esac
 
 RUN rustup target add $(cat /rust_target.txt)
 # RUN cargo build --release --target $(cat /rust_target.txt) --bin boilmaster
+ENV CROSS_CONTAINER_IN_CONTAINER=true
 RUN cargo install cross --git https://github.com/cross-rs/cross
 RUN cross build --release --target $(cat /rust_target.txt) --bin boilmaster
 
