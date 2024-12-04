@@ -20,14 +20,13 @@ RUN cargo chef prepare --bin boilmaster --recipe-path recipe.json
 FROM base AS builder
 
 RUN if [ "${arch}" = "aarch64-unknown-linux-gnu" ]; then \
-    dpkg --add-architecture arm64; then \
-    apt-get update && apt-get install libssl-dev:arm64 -y; then \
-    export PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-gnu/pkgconfig; then \
+    dpkg --add-architecture arm64 \
+    apt-get update && apt-get install libssl-dev:arm64 -y \
+    export PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-gnu/pkgconfig \
     rustup target add ${arch} \
     else \
     echo "Building x86" \
     fi
-
 WORKDIR /app
 
 COPY --from=planner /app/recipe.json recipe.json
