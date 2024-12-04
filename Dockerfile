@@ -1,6 +1,6 @@
 ARG target=""
 # Setup chef
-FROM rust:1.82.0-slim-bookworm AS base
+FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
 
 RUN apt-get update && apt-get install pkg-config libssl-dev git -y
 
@@ -43,7 +43,7 @@ ENV PKG_CONFIG_SYSROOT_DIR=${pkg-config-sysroot-dir}
 RUN cargo build --release --target ${arch} --bin boilmaster
 
 # Create runtime image
-FROM debian:bookworm-slim AS runtime
+FROM --platform=${target} debian:bookworm-slim AS runtime
 
 # Redirect persistent data into one shared volume
 ENV BM_VERSION_PATCH_DIRECTORY="/app/persist/patches"
