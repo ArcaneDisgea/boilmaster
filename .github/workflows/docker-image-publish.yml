@@ -104,16 +104,19 @@ jobs:
                   subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
                   subject-digest: ${{ steps.push.outputs.digest }}
                   push-to-registry: true
-                  
+
     create-manifests:
         needs: build-and-push-image
         runs-on: ubuntu-latest
-        steps:
-            - name: Create latest manifest and push
+        defaults:
+            run:
+              shell: bash
+        steps:      
+            - name: Create multiarch manifests
               run: |
                 docker manifest create \
                   ghcr.io/arcanedisgea/boilmaster:latest \
-                  --amend ghcr.io/arcanedisgea/boilmaster:latest-amd64 \
+                  --amend ghcr.io/arcanedisgea/boilmaster:latest-x86_64 \
                   --amend ghcr.io/arcanedisgea/boilmaster:latest-arm64
                 docker manifest push ghcr.io/arcanedisgea/boilmaster:latest
               
