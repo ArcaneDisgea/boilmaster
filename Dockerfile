@@ -1,5 +1,5 @@
 # Setup chef
-FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
+FROM rust:1.82.0-slim-bookworm AS base
 
 RUN apt-get update && apt-get install pkg-config libssl-dev git -y
 
@@ -42,7 +42,7 @@ ENV PKG_CONFIG_SYSROOT_DIR=${pkg-config-sysroot-dir}
 RUN cargo build --release --target ${arch} --bin boilmaster
 
 # Create runtime image
-FROM --platform=$TARGETPLATFORM debian:bookworm-slim AS runtime
+FROM debian:bookworm-slim AS runtime
 
 ARG zlib
 
