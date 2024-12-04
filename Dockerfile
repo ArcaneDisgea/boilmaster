@@ -43,10 +43,7 @@ ENV PKG_CONFIG_SYSROOT_DIR=${pkg-config-sysroot-dir}
 RUN cargo build --release --target ${arch} --bin boilmaster
 
 # Create runtime image
-FROM --platform=${target} debian:bookworm-slim AS runtime
-
-ARG target
-ARG zlib
+FROM --platform=$TARGETPLATFORM debian:bookworm-slim AS runtime
 
 # Redirect persistent data into one shared volume
 ENV BM_VERSION_PATCH_DIRECTORY="/app/persist/patches"
@@ -57,6 +54,8 @@ ENV BM_SEARCH_SQLITE_DIRECTORY="/app/persist/search"
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y git curl
+
+ARG zlib
 
 COPY --from=builder /lib/${zlib}/libz.so.1 /lib/${zlib}/libz.so.1
 COPY --from=builder /app/boilmaster.toml /app
