@@ -1,5 +1,4 @@
 # Global Args
-ARG arch
 # Setup chef
 FROM rust:1.82.0-slim-bookworm AS base
 
@@ -18,7 +17,7 @@ RUN cargo chef prepare --bin boilmaster --recipe-path recipe.json
 
 # Build Boilmaster
 FROM base AS builder
-
+ARG arch
 RUN if [ "${arch}" = "aarch64-unknown-linux-gnu" ]; then \
     dpkg --add-architecture arm64 && \
     apt-get update && apt-get install libssl-dev:arm64 -y && \
