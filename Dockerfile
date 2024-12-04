@@ -35,7 +35,7 @@ FROM base AS armbuilder
 ARG arch
 
 RUN dpkg --add-architecture arm64
-RUN apt install libssl-dev:arm64 -y
+RUN apt update && apt install libssl-dev:arm64 -y
 ENV PKG_CONFIG_LIBDIR_${arch}=/usr/lib/aarch64-linux-gnu/pkgconfig
 
 WORKDIR /app
