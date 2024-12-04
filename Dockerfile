@@ -43,7 +43,7 @@ ENV PKG_CONFIG_SYSROOT_DIR=${pkg-config-sysroot-dir}
 RUN cargo build --release --target ${arch} --bin boilmaster
 
 # Create runtime image
-FROM --platform=${target} debian:bookworm-slim AS runtime
+FROM debian:bookworm-slim AS runtime
 
 # Redirect persistent data into one shared volume
 ENV BM_VERSION_PATCH_DIRECTORY="/app/persist/patches"
