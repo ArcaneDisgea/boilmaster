@@ -1,5 +1,5 @@
 # Setup chef
-FROM rust:1.82.0-slim-bookworm AS base
+FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
 
 RUN apt-get update && apt-get install pkg-config libssl-dev git -y
 

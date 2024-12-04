@@ -82,7 +82,7 @@ jobs:
               with:
                   context: .
                   # platforms: x86_64-unknown-linux-gnu,aarch64-unknown-linux-gnu
-                  platforms: ${{ matrix.platform.target}}
+                  platforms: ${{ matrix.platform.target }}
                   build-args: |
                       arch=${{ matrix.platform.triple }}
                       zlib=${{ matrix.platform.zlib }}
