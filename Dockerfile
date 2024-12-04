@@ -24,8 +24,9 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
 
 COPY . .
+ARG arch
 
-RUN cargo build --release --bin boilmaster
+RUN cargo build --release --target arch --bin boilmaster
 
 # Create runtime image
 FROM debian:bookworm-slim AS runtime
