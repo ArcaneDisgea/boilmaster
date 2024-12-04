@@ -1,7 +1,7 @@
 # Setup chef
 FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
 
-RUN apt-get update && apt-get install pkg-config libssl-dev git docker.io -y
+RUN apt-get update && apt-get install pkg-config libssl-dev git -y
 
 RUN cargo install cargo-chef --locked
 
