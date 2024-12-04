@@ -1,3 +1,5 @@
+# Global Args
+ARG arch
 # Setup chef
 FROM rust:1.82.0-slim-bookworm AS base
 
@@ -15,8 +17,7 @@ COPY . .
 RUN cargo chef prepare --bin boilmaster --recipe-path recipe.json
 
 # Build x86 Boilmaster
-FROM base AS x86builder
-ARG arch
+FROM base AS x86_64-unknown-linux-gnu-builder
 
 WORKDIR /app
 
@@ -29,14 +30,11 @@ COPY . .
 RUN cargo build --release --target ${arch} --bin boilmaster
 
 # Build arm Boilmaster
-
-FROM base AS armbuilder
-
-ARG arch
+FROM base AS aarch64-unknown-linux-gnu-builder
 
 RUN dpkg --add-architecture arm64
-RUN apt update && apt install libssl-dev:arm64 -y
-ENV PKG_CONFIG_LIBDIR_${arch}=/usr/lib/aarch64-linux-gnu/pkgconfig
+RUN apt-get update && apt-get install libssl-dev:arm64 -y
+ENV PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-gnu/pkgconfig
 
 WORKDIR /app
 
@@ -63,9 +61,9 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y git curl
 
-COPY --from=builder /lib/x86_64-linux-gnu/libz.so.1 /lib/x86_64-linux-gnu/libz.so.1
-COPY --from=builder /app/boilmaster.toml /app
-COPY --from=builder /app/target/release/boilmaster /app
+COPY --from=${arch}-builder /lib/x86_64-linux-gnu/libz.so.1 /lib/x86_64-linux-gnu/libz.so.1
+COPY --from=${arch}-builder /app/boilmaster.toml /app
+COPY --from=${arch}-builder /app/target/release/boilmaster /app
 
 VOLUME /app/persist
 
