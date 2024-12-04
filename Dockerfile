@@ -1,6 +1,6 @@
 ARG target=""
 # Setup chef
-FROM rust:1.82.0-slim-bookworm AS base
+FROM --platform=linux/amd64 rust:1.82.0-slim-bookworm AS base
 
 RUN apt-get update && apt-get install pkg-config libssl-dev git -y
 
@@ -53,7 +53,7 @@ ENV BM_SEARCH_SQLITE_DIRECTORY="/app/persist/search"
 
 WORKDIR /app
 
-# RUN apt-get update && apt-get install -y git curl
+RUN apt-get update && apt-get install -y git curl
 
 ARG zlib
 
