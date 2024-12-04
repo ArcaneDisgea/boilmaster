@@ -24,13 +24,15 @@ jobs:
                       name: boilmaster-x86_64-unknown-linux-gnu
                       cargo_command: cargo
                       triple: x86_64-unknown-linux-gnu
-                      target: builder
+                      target: linux/amd64
+                      zlib: x86_64-linux-gnu
                     - os_name: arm64
                       os: ubuntu-latest
                       bin: boilmaster
                       name: boilmaster-aarch64-unknown-linux-gnu
                       triple: aarch64-unknown-linux-gnu
-                      target: builder
+                      target: linux/arm64
+                      zlib: aarch64-linux-gnu
 
         runs-on: ${{ matrix.platform.os }}
 
@@ -76,9 +78,9 @@ jobs:
               with:
                   context: .
                   # platforms: x86_64-unknown-linux-gnu,aarch64-unknown-linux-gnu
-                  # platforms: linux/amd64,linux/arm64
-                  build-args: arch=${{ matrix.platform.triple }}
-                  target: ${{ matrix.platform.target }}
+                  platform: ${{ matrix.platform.target}}
+                  build-args: arch=${{ matrix.platform.triple }},zlib=${{ matrix.platform.zlib }}
+                  # target: ${{ matrix.platform.target }}
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
@@ -90,3 +92,9 @@ jobs:
                   subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
                   subject-digest: ${{ steps.push.outputs.digest }}
                   push-to-registry: true
+
+            - name: Create and push manifest images
+              uses: Noelware/docker-manifest-action@0.4.2
+              with:
+                  inputs: arcanedisgea/boilmaster:latest
+                  images: arcanedisgea/boilmaster:latest-x86_64,arcanedisgea/boilmaster:latest-arm64

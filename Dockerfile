@@ -7,8 +7,9 @@ RUN apt-get update && apt-get install pkg-config libssl-dev git -y
 ARG arch
 RUN if [ "${arch}" = "aarch64-unknown-linux-gnu" ]; then \
     dpkg --add-architecture arm64 && \
-    apt-get update && apt-get install libssl-dev:arm64 -y && \
+    apt-get update && apt-get install libssl-dev:arm64 gcc-aarch64-linux-gnu zlib1g-dev:arm64 -y && \
     export PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig && \
+    export PKG_CONFIG_SYSROOT_DIR=/usr/lib/aarch64-linux-gnu && \
     rustup target add ${arch}; \
     fi
 
@@ -37,7 +38,9 @@ COPY . .
 RUN cargo build --release --target ${arch} --bin boilmaster
 
 # Create runtime image
-FROM debian:bookworm-slim AS runtime
+FROM --platform=$TARGETPLATFORM debian:bookworm-slim AS runtime
+
+ARG zlib
 
 # Redirect persistent data into one shared volume
 ENV BM_VERSION_PATCH_DIRECTORY="/app/persist/patches"
@@ -49,7 +52,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y git curl
 
-COPY --from=builder /lib/x86_64-linux-gnu/libz.so.1 /lib/x86_64-linux-gnu/libz.so.1
+COPY --from=builder /lib/${zlib}/libz.so.1 /lib/${zlib}/libz.so.1
 COPY --from=builder /app/boilmaster.toml /app
 COPY --from=builder /app/target/release/boilmaster /app
 
