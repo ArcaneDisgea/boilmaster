@@ -26,7 +26,7 @@ RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
 COPY . .
 ARG arch
 
-RUN cargo build --release --target arch --bin boilmaster
+RUN cargo build --release --target ${arch} --bin boilmaster
 
 # Create runtime image
 FROM debian:bookworm-slim AS runtime
