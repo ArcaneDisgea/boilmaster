@@ -16,31 +16,21 @@ COPY . .
 
 RUN cargo chef prepare --bin boilmaster --recipe-path recipe.json
 
-# Build x86 Boilmaster
-FROM base AS x86_64-unknown-linux-gnu-builder
+# Build Boilmaster
+FROM base AS builder
+
+RUN if [ "${arch}" = "aarch64-unknown-linux-gnu" ]; then \
+    dpkg --add-architecture arm64; then \
+    apt-get update && apt-get install libssl-dev:arm64 -y; then \
+    export PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-gnu/pkgconfig; then \
+    rustup target add ${arch} \
+    else \
+    echo "Building x86" \
+    fi
 
 WORKDIR /app
 
 COPY --from=planner /app/recipe.json recipe.json
-
-RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
-
-COPY . .
-
-RUN cargo build --release --target ${arch} --bin boilmaster
-
-# Build arm Boilmaster
-FROM base AS aarch64-unknown-linux-gnu-builder
-
-RUN dpkg --add-architecture arm64
-RUN apt-get update && apt-get install libssl-dev:arm64 -y
-ENV PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-gnu/pkgconfig
-
-WORKDIR /app
-
-COPY --from=planner /app/recipe.json recipe.json
-
-RUN rustup target add ${arch}
 
 RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
 
@@ -61,9 +51,9 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y git curl
 
-COPY --from=${arch}-builder /lib/x86_64-linux-gnu/libz.so.1 /lib/x86_64-linux-gnu/libz.so.1
-COPY --from=${arch}-builder /app/boilmaster.toml /app
-COPY --from=${arch}-builder /app/target/release/boilmaster /app
+COPY --from=builder /lib/x86_64-linux-gnu/libz.so.1 /lib/x86_64-linux-gnu/libz.so.1
+COPY --from=builder /app/boilmaster.toml /app
+COPY --from=builder /app/target/release/boilmaster /app
 
 VOLUME /app/persist
 
