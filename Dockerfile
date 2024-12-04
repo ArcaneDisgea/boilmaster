@@ -33,9 +33,10 @@ RUN cargo build --release --target ${arch} --bin boilmaster
 FROM base AS armbuilder
 
 ARG arch
-ENV PKG_CONFIG_DIR ""
-ENV PKG_CONFIG_LIBDIR ${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/usr/share/pkgconfig
-ENV PKG_CONFIG_SYSROOT_DIR /build/root
+
+RUN dpkg --add-architecture arm64
+RUN apt install libssl-dev:arm64 -y
+ENV PKG_CONFIG_LIBDIR_${arch}=/usr/lib/aarch64-linux-gnu/pkgconfig
 
 WORKDIR /app
 
