@@ -31,7 +31,11 @@ RUN cargo build --release --target ${arch} --bin boilmaster
 # Build arm Boilmaster
 
 FROM base AS armbuilder
+
 ARG arch
+ENV PKG_CONFIG_DIR ""
+ENV PKG_CONFIG_LIBDIR ${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/usr/share/pkgconfig
+ENV PKG_CONFIG_SYSROOT_DIR /build/root
 
 WORKDIR /app
 
