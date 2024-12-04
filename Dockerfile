@@ -1,9 +1,7 @@
 # Setup chef
-FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
+FROM rust:1.82.0-slim-bookworm AS base
 
-RUN apt-get update && apt-get install pkg-config libssl-dev git docker.io -y
-
-RUN --mount=type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock
+RUN apt-get update && apt-get install pkg-config libssl-dev git -y
 
 RUN cargo install cargo-chef --locked
 
@@ -27,22 +25,7 @@ RUN cargo chef cook --bin boilmaster --release --recipe-path recipe.json
 
 COPY . .
 
-# ARG TARGETPLATFORM
-
-# RUN cargo build --release --bin boilmaster
-
-ARG TARGETPLATFORM
-RUN case "$TARGETPLATFORM" in \
-  "linux/arm64") echo aarch64-unknown-linux-gnu > /rust_target.txt ;; \
-  "linux/amd64") echo x86_64-unknown-linux-gnu > /rust_target.txt ;; \
-  *) exit 1 ;; \
-esac
-
-RUN rustup target add $(cat /rust_target.txt)
-# RUN cargo build --release --target $(cat /rust_target.txt) --bin boilmaster
-ENV CROSS_CONTAINER_IN_CONTAINER=true
-RUN cargo install cross --git https://github.com/cross-rs/cross
-RUN cross build --release --target $(cat /rust_target.txt) --bin boilmaster
+RUN cargo build --release --bin boilmaster
 
 # Create runtime image
 FROM debian:bookworm-slim AS runtime
