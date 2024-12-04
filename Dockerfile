@@ -3,6 +3,8 @@ FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
 
 RUN apt-get update && apt-get install pkg-config libssl-dev git docker.io -y
 
+RUN --mount=type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+
 RUN cargo install cargo-chef --locked
 
 # Setup recipe
