@@ -20,19 +20,15 @@ jobs:
                 platform:
                     - os_name: x86_64
                       os: ubuntu-latest
-                      bin: boilmaster
-                      name: boilmaster-x86_64-unknown-linux-gnu
                       cargo_command: cargo
-                      triple: x86_64-unknown-linux-gnu
+                      arch: x86_64-unknown-linux-gnu
                       target: linux/amd64
                       zlib: x86_64-linux-gnu
                       pkg-config-path: /usr/lib/pkgconfig/
                       pkg-config-sysroot-dir: /usr/lib/aarch64-linux-gnu/
                     - os_name: arm64
                       os: ubuntu-latest
-                      bin: boilmaster
-                      name: boilmaster-aarch64-unknown-linux-gnu
-                      triple: aarch64-unknown-linux-gnu
+                      arch: aarch64-unknown-linux-gnu
                       target: linux/arm64
                       zlib: aarch64-linux-gnu
                       pkg-config-path: /usr/lib/aarch64-linux-gnu/pkgconfig/
@@ -75,7 +71,7 @@ jobs:
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v3
               with:
-                platforms: arm64
+                  platforms: arm64
 
             # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
             # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
@@ -85,10 +81,8 @@ jobs:
               uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
               with:
                   context: .
-                  # platforms: x86_64-unknown-linux-gnu,aarch64-unknown-linux-gnu
-                  # platforms: ${{ matrix.platform.target }}
                   build-args: |
-                      arch=${{ matrix.platform.triple }}
+                      arch=${{ matrix.platform.arch }}
                       zlib=${{ matrix.platform.zlib }}
                       pkg-config-path=${{ matrix.platform.pkg-config-path}}
                       pkg-config-sysroot-dir=${{ matrix.platform.pkg-config-sysroot-dir }}
@@ -110,7 +104,7 @@ jobs:
         runs-on: ubuntu-latest
         defaults:
             run:
-              shell: bash
+                shell: bash
         permissions:
             contents: read
             packages: write
@@ -121,18 +115,11 @@ jobs:
                   registry: ${{ env.REGISTRY }}
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
-                  
+
             - name: Create multiarch manifests
               run: |
-                docker manifest create \
-                  ghcr.io/arcanedisgea/boilmaster:latest \
-                  --amend ghcr.io/arcanedisgea/boilmaster:latest-x86_64 \
-                  --amend ghcr.io/arcanedisgea/boilmaster:latest-arm64
-                docker manifest push ghcr.io/arcanedisgea/boilmaster:latest
-              
-            # - name: Create and push manifest images
-            #   uses: int128/docker-manifest-create-action@v2
-            #   with:
-            #       tags: ghcr.io/${{ github.repository }}:latest
-            #       sources: |
-            #         ghcr.io/${{ github.repository }}:latest-${{ matrix.platform.os_name }}
+                  docker manifest create \
+                    ghcr.io/arcanedisgea/boilmaster:latest \
+                    --amend ghcr.io/arcanedisgea/boilmaster:latest-x86_64 \
+                    --amend ghcr.io/arcanedisgea/boilmaster:latest-arm64
+                  docker manifest push ghcr.io/arcanedisgea/boilmaster:latest
