@@ -56,10 +56,11 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y git curl
 
 ARG zlib
+ARG target
 
 COPY --from=builder /lib/${zlib}/libz.so.1 /lib/${zlib}/libz.so.1
 COPY --from=builder /app/boilmaster.toml .
-COPY --from=builder /app/target/release/boilmaster .
+COPY --from=builder /app/target/${target}/release/boilmaster .
 
 VOLUME /app/persist
 
