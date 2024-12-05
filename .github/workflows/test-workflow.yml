@@ -1,0 +1,21 @@
+name: convert vars to lowercase
+on:
+    push:
+        branches: ["multi-platform-images"]
+
+env:
+    IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+    convert-to-lower:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                shell: bash
+        steps:
+            - name: convert to lower
+              run: |
+                  echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+            - name: echo lower
+              run: |
+                  echo $REPO

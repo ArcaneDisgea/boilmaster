@@ -10,6 +10,7 @@ on:
 env:
     REGISTRY: ghcr.io
     IMAGE_NAME: ${{ github.repository }}
+    LOWERCASE_REPO: arcanedisgea/boilmaster
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -116,14 +117,10 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: ToLowercase
-              run: |
-                  echo "repository=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
-
             - name: Create multiarch manifests
               run: |
                   docker manifest create \
-                    ${{ env.registry }}/${{ steps.ToLowercase.outputs.repository }}:latest \
-                    --amend ${{ env.registry }}/${{ steps.ToLowercase.outputs.repository }}:latest-x86_64 \
-                    --amend ${{ env.registry }}/${{ steps.ToLowercase.outputs.repository }}:latest-arm64
-                  docker manifest push ${{ env.registry }}/${{ steps.ToLowercase.outputs.repository }}:latest
+                    ${{ env.registry }}/${{ env.LOWERCASE_REPO }}:latest \
+                    --amend ${{ env.registry }}/${{ env.LOWERCASE_REPO }}:latest-x86_64 \
+                    --amend ${{ env.registry }}/${{ env.LOWERCASE_REPO }}:latest-arm64
+                  docker manifest push ${{ env.registry }}/${{ env.LOWERCASE_REPO }}:latest
