@@ -119,7 +119,7 @@ jobs:
             - name: Create multiarch manifests
               run: |
                   docker manifest create \
-                    ${{ env.registry }}/${{ env.IMAGE_NAME }}:latest \
-                    --amend ${{ env.registry }}/${{ env.IMAGE_NAME }}:latest-x86_64 \
-                    --amend ${{ env.registry }}/${{ env.IMAGE_NAME }}:latest-arm64
-                  docker manifest push ${{ env.registry }}/${{ env.IMAGE_NAME }}:latest
+                    ${{ env.registry }}/${{ github.actor }}/boilmaster:latest \
+                    --amend ${{ env.registry }}/${{ github.actor }}/boilmaster:latest-x86_64 \
+                    --amend ${{ env.registry }}/${{ github.actor }}/boilmaster:latest-arm64
+                  docker manifest push ${{ env.registry }}/${{ github.actor }}/boilmaster:latest
