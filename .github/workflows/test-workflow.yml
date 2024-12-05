@@ -18,4 +18,4 @@ jobs:
                   echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
             - name: echo lower
               run: |
-                  echo $REPO
+                  echo ${{ env.REPO }}
