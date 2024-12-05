@@ -59,8 +59,8 @@ ARG zlib
 ARG target
 
 COPY --from=builder /lib/${zlib}/libz.so.1 /lib/${zlib}/libz.so.1
-COPY --from=builder /app/boilmaster.toml .
-COPY --from=builder /app/target/${target}/release/boilmaster .
+COPY --from=builder /app/boilmaster.toml /app/
+COPY --from=builder /app/target/${target}/release/boilmaster /app/
 
 VOLUME /app/persist
 
