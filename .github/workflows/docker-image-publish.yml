@@ -124,7 +124,7 @@ jobs:
             - name: Create multiarch manifests
               run: |
                   docker manifest create \
-                    ${{ env.registry }}/${{ env.REPO }}:latest \
-                    --amend ${{ env.registry }}/${{ env.REPO }}:latest-x86_64 \
-                    --amend ${{ env.registry }}/${{ env.REPO }}:latest-arm64
-                  docker manifest push ${{ env.registry }}/${{ env.REPO }}:latest
+                    ${{ env.REGISTRY }}/${{ env.REPO }}:latest \
+                    --amend ${{ env.REGISTRY }}/${{ env.REPO }}:latest-x86_64 \
+                    --amend ${{ env.REGISTRY }}/${{ env.REPO }}:latest-arm64
+                  docker manifest push ${{ env.REGISTRY }}/${{ env.REPO }}:latest
