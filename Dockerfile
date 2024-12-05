@@ -1,4 +1,5 @@
 ARG target=""
+ARG zlib=""
 # Setup chef
 FROM --platform=$BUILDPLATFORM rust:1.82.0-slim-bookworm AS base
 
@@ -54,8 +55,6 @@ ENV BM_SEARCH_SQLITE_DIRECTORY="/app/persist/search"
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y git curl
-
-ARG zlib
 
 COPY --from=builder /lib/${zlib}/libz.so.1 /lib/${zlib}/libz.so.1
 COPY --from=builder /app/boilmaster.toml /app
