@@ -10,7 +10,8 @@ on:
 env:
     REGISTRY: ghcr.io
     IMAGE_NAME: ${{ github.repository }}
-    LOWERCASE_REPO: arcanedisgea/boilmaster
+    # we edit REPO later, this is just to remove the warnings from it "not existing".
+    REPO:
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -116,11 +117,14 @@ jobs:
                   registry: ${{ env.REGISTRY }}
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
+            - name: convert to lower
+              run: |
+                  echo "REPO=${GITHUB_REPOSITORY@L}" >>${GITHUB_ENV}
 
             - name: Create multiarch manifests
               run: |
                   docker manifest create \
-                    ${{ env.registry }}/${{ env.LOWERCASE_REPO }}:latest \
-                    --amend ${{ env.registry }}/${{ env.LOWERCASE_REPO }}:latest-x86_64 \
-                    --amend ${{ env.registry }}/${{ env.LOWERCASE_REPO }}:latest-arm64
-                  docker manifest push ${{ env.registry }}/${{ env.LOWERCASE_REPO }}:latest
+                    ${{ env.registry }}/${{ env.REPO }}:latest \
+                    --amend ${{ env.registry }}/${{ env.REPO }}:latest-x86_64 \
+                    --amend ${{ env.registry }}/${{ env.REPO }}:latest-arm64
+                  docker manifest push ${{ env.registry }}/${{ env.REPO }}:latest
