@@ -38,7 +38,7 @@ jobs:
                   cargo clippy -- -W warnings
             - name: Test
               run: |
-                  cargo check
-                  cargo test --all
+                  cargo check --release --target ${{ matrix.platform.target }} --workspace
+                  cargo test --release --target ${{ matrix.platform.target }} --workspace
             - name: Build
               run: cargo build --release --target ${{ matrix.platform.target }} --bin boilmaster
