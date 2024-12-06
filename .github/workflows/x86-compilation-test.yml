@@ -26,8 +26,8 @@ jobs:
             - name: Add arch specific tooling (optional)
               if: ${{ !contains(matrix.platform.target, 'x86_64-unknown-linux-gnu')}}
               run: |
-                  dpkg --add-architecture arm64
-                  apt-get update && apt-get install libssl-dev:arm64 gcc-aarch64-linux-gnu
+                  sudo dpkg --add-architecture arm64
+                  sudo apt-get update && apt-get install libssl-dev:arm64 gcc-aarch64-linux-gnu
                   rustup target add ${{ matrix.platform.target }}
             - name: Toolchain info
               run: |
