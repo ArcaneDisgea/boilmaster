@@ -1,0 +1,46 @@
+name: Test and Coverage
+
+on: [push]
+
+jobs:
+    run_tests:
+        strategy:
+            matrix:
+                platform:
+                    - os: ubuntu-latest
+                      target: x86_64-unknown-linux-gnu
+                      use-cross: false
+                      use-tarpaulin: false
+                    - os: ubuntu-latest
+                      target: aarch64-unknown-linux-gnu
+                      use-cross: false
+                      use-tarpaulin: false
+        runs-on: ${{ matrix.platform.os }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Update local toolchain
+              run: |
+                  rustup update
+                  rustup component add clippy
+            - name: Add arch specific tooling (optional)
+              if: ${{ !contains(matrix.platform.target, 'x86_64-unknown-linux-gnu')}}
+              run: |
+                  dpkg --add-architecture arm64
+                  apt-get update && apt-get install libssl-dev:arm64 gcc-aarch64-linux-gnu
+                  rustup target add ${{ matrix.platform.target }}
+            - name: Toolchain info
+              run: |
+                  cargo --version --verbose
+                  rustc --version
+                  cargo clippy --version
+            - name: Lint
+              run: |
+                  cargo fmt -- --check
+                  cargo clippy -- -D warnings
+            - name: Test
+              run: |
+                  cargo check
+                  cargo test --all
+            - name: Build
+              run: cargo build --release --target ${{ matrix.platform.target }} --bin boilmaster
